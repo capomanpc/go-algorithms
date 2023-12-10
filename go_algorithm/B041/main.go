@@ -2,21 +2,22 @@ package main
 
 import (
 	"fmt"
-	"math"
+	"strconv"
 )
 
 func main() {
-	var n string
+	var n int
 	fmt.Scan(&n)
 
-	res := 0
-	for i, v := range n {
-		if v == '0' {
-			continue
-		}
+	s := []byte(strconv.Itoa(n))
+	l := len(s)
 
-		res = res + int(math.Pow(2, float64(len(n)-1-i)))
+	acc := 0
+	for i := l; i > 0; i-- {
+		if s[i-1] == '1' {
+			acc += (1 << (l - i))
+		}
 	}
 
-	fmt.Println(res)
+	fmt.Println(acc)
 }

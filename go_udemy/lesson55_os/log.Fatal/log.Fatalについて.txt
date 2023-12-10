@@ -1,0 +1,15 @@
+
+log.Fatalの中身
+
+func Fatal(v ...interface{}) {
+    std.Output(2, fmt.Sprint(v...))
+    os.Exit(1)
+}
+
+
+(v ...interface{})
+    可変長引数の引数
+    引数名がv
+    引数の型がinterface{}型
+    受け取る値の型が分からないときなどはinterface{}型を引数とする　
+

@@ -1,0 +1,13 @@
+
+並行処理、並列処理、同期処理、非同期処理とは？
+https://qiita.com/kyabetsuda/items/384a57ff6b7250de40ad
+
+
+並行処理、並列処理、OS、ハードウェアに関して
+https://qiita.com/Kohei909Otsuka/items/26be74de803d195b37bd
+
+
+プロセスとスレッドの違いについて
+https://qiita.com/Amby/items/66073b2df242c3bd6558
+
+物理アドレスと仮想アドレスの違いについて

@@ -1,0 +1,62 @@
+package main
+
+import "testing"
+
+var Debug bool = false
+
+func TestIsOne(t *testing.T) {
+    i := 0
+
+    if Debug {
+        t.Skip("スキップさせる")
+    }
+
+    v := IsOne(i)
+
+    if !v {
+        t.Errorf("%v != %v", i, 1)
+    }
+}
+
+
+(t *testing.T)
+    TestIsOne関数の引数
+    testing.T型のポインタ変数がt
+
+    testingパッケージで定義されているインターフェース型
+    以下のようなメソッドが定義されている
+    interface型(testing.T型のポインタ変数)のtを引数として呼び出すことで
+    t が持つメソッドを使うことができる
+
+    type T interface {
+        Error(args ...interface{})
+        Errorf(format string, args ...interface{})
+        Fail()
+        FailNow()
+        Failed() bool
+        Fatal(args ...interface{})
+        Fatalf(format string, args ...interface{})
+        Log(args ...interface{})
+        Logf(format string, args ...interface{})
+        Name() string
+        Skip(args ...interface{})
+        SkipNow()
+        Skipf(format string, args ...interface{})
+        Skipped() bool
+    }
+
+
+t.Skip()
+    テストのスキップをする
+    テストの事前条件が満たされていない場合に使われる
+    たとえば複数のテストをしたいときに一つのテストだけ事前条件が
+    満たされていない場合を考える
+    if文で事前条件を満たさない場合にSkip()メソッドを実行すれば
+    テストをスキップして残りのテストは正しく実行できる
+
+
+t.Error()
+    自分でエラーを設定したい場合にこのメソッドを使う
+    通常、普通のエラーになればテストは失敗するがこのメソッドを使うことで
+    特定の条件になった場合にテストが失敗するように自分で決めることができる
+    

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+</head>
+
+<body>
+    <script>
+        //オブジェクトを要素とするデータを格納した配列
+        const data = [
+            { choice: 'Option A', votes: 30 },
+            { choice: 'Option B', votes: 3 },
+            { choice: 'Option C', votes: 3 },
+            { choice: 'Option D', votes: 4 },
+            { choice: 'Option E', votes: 5 }
+        ];
+
+        // SVGのサイズ設定
+        const width = 500, height = 250;
+
+        // 投票数の合計を計算する変数
+        let totalVotes = 0;
+
+        // forループを使用して投票数を合計
+        for (let i = 0; i < data.length; i++) {
+            totalVotes += data[i].votes;
+        }
+
+        //SVG要素の作成 htmlで言うcanvasのようなもの
+        //selectメソッド:セレクションを作成
+        //セレクションとは操作するタグを指定したもの
+        //その指定したタグに対してメソッドチェーンを用いて操作する
+        const svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // スケールの設定
+        const xScale = d3.scaleLinear()
+            .domain([0, totalVotes]) //domainでMaxの値を設定(総投票数を棒グラフの100%とする)
+            .range([0, width]); //rangeでグラフが描画される範囲を指定(棒グラフが100%のときはwidthの長さになる)
+
+        // 横棒グラフの背景 (グレー) を描画
+        svg.selectAll("rect.bg") //rectは角丸四角形のタグでbgはクラスのこと
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bg")
+            .attr("y", (d, i) => i * 40) //四角形の上端の位置yを指定 dataからdとi(index番号)を読み取りi*40を指定
+            .attr("width", width)
+            .attr("height", 30)
+            .attr("fill", "whitesmoke")
+            .attr("rx", 5) // 角丸の半径を設定
+            .attr("ry", 5);
+
+        const colorScale = d3.scaleLinear()
+            .domain([0, data.length - 1]) // データのインデックスをドメインに設定
+            .range(["#87cefa", "#6495ed"]); // グラデーションのカラーレンジを指定
+          
+
+        // 横棒グラフの前景 (選択された回数) を描画
+        svg.selectAll("rect.fg")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "fg")
+            .attr("y", (d, i) => i * 40)
+            .attr("width", d => xScale(d.votes))
+            .attr("height", 30)
+            .attr("fill", (d, i) => colorScale(i))
+            .attr("rx", 5) // 角丸の半径を設定
+            .attr("ry", 5);
+
+        // データ数（投票数）を表示するテキストの追加
+        svg.selectAll("text")
+            .data(data)
+            .enter().append("text")
+            .attr("x", width / 2) // テキストのx位置を背景の中央に設定
+            .attr("y", (d, i) => i * 40 + 15) // テキストのy位置を調整
+            .attr("text-anchor", "middle") // テキストを中央揃えに設定
+            .attr("dy", ".35em") // テキストの垂直位置を微調整
+            .attr("fill", d => (xScale(d.votes) > width / 2) ? "white" : "black") // テキストの色を背景に基づいて設定
+            .text(d => d.votes); // テキストに表示するデータ（投票数）
+
+
+    </script>
+</body>
+
+</html>

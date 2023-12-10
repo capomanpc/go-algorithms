@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>アンケート結果</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <h1>アンケート結果</h1>
+    <table border="1">
+        <tr>
+            <th>設問</th>
+            <th>1.全くそう思わない</th>
+			<th>2.そう思わない</th>
+			<th>3.どちらでもない</th>
+			<th>4.そう思う</th>
+			<th>5.強くそう思う</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>{{index . "q1op1"}}</td>
+            <td>{{index . "q1op2"}}</td>
+            <td>{{index . "q1op3"}}</td>
+            <td>{{index . "q1op4"}}</td>
+            <td>{{index . "q1op5"}}</td>
+        </tr>
+		<tr>
+            <td>2</td>
+            <td>{{index . "q2op1"}}</td>
+            <td>{{index . "q2op2"}}</td>
+            <td>{{index . "q2op3"}}</td>
+            <td>{{index . "q2op4"}}</td>
+            <td>{{index . "q2op5"}}</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>{{index . "q3op1"}}</td>
+            <td>{{index . "q3op2"}}</td>
+            <td>{{index . "q3op3"}}</td>
+            <td>{{index . "q3op4"}}</td>
+            <td>{{index . "q3op5"}}</td>
+        </tr>
+		<tr>
+            <td>4</td>
+            <td>{{index . "q4op1"}}</td>
+            <td>{{index . "q4op2"}}</td>
+            <td>{{index . "q4op3"}}</td>
+            <td>{{index . "q4op4"}}</td>
+            <td>{{index . "q4op5"}}</td>
+        </tr>
+		<tr>
+            <td>5</td>
+            <td>{{index . "q5op1"}}</td>
+            <td>{{index . "q5op2"}}</td>
+            <td>{{index . "q5op3"}}</td>
+            <td>{{index . "q5op4"}}</td>
+            <td>{{index . "q5op5"}}</td>
+        </tr>
+		<tr>
+            <td>6</td>
+            <td>{{index . "q6op1"}}</td>
+            <td>{{index . "q6op2"}}</td>
+            <td>{{index . "q6op3"}}</td>
+            <td>{{index . "q6op4"}}</td>
+            <td>{{index . "q6op5"}}</td>
+        </tr>
+		<tr>
+            <td>7</td>
+            <td>{{index . "q7op1"}}</td>
+            <td>{{index . "q7op2"}}</td>
+            <td>{{index . "q7op3"}}</td>
+            <td>{{index . "q7op4"}}</td>
+            <td>{{index . "q7op5"}}</td>
+        </tr>
+		
+    </table>
+
+    <span>設問1</span>
+    <canvas id="pieChartQ1" width="400" height="400" style="width: 400px; height: 400px;"></canvas>
+    
+    <script>
+        var chartQ1 = null;
+        var chartQ2 = null;
+        var resultsQ1, resultsQ2, resultsQ3, resultsQ4, resultsQ5, resultsQ6, resultsQ7;
+
+        // サーバーからデータを取得する関数
+        async function fetchData() {
+                // サーバーからデータを非同期で取得
+                const response = await fetch('/data');
+                if (!response.ok) {
+                    throw new Error('データの取得に失敗しました');
+                }
+                // JSON データを取り出し
+                const data = await response.json();
+
+                // data オブジェクトから各 resultsQ マップを取り出す
+                resultsQ1 = data.resultsQ1;
+                resultsQ2 = data.resultsQ2;
+                resultsQ3 = data.resultsQ3;
+                resultsQ4 = data.resultsQ4;
+                resultsQ5 = data.resultsQ5;
+                resultsQ6 = data.resultsQ6;
+                resultsQ7 = data.resultsQ7;
+        }
+        // データを取得してグラフを描画する関数
+        async function drawChart() {
+            try {
+                // チャートがまだ生成されていない場合
+                if (chartQ1 == null) {
+                    await fetchData();
+                    
+                    // データからラベルと値の配列を作成
+                    const labels = Object.keys(resultsQ1);
+                    const values = Object.values(resultsQ1);
+
+                    // <canvas> 要素のコンテキストを取得
+                    const ctx = document.getElementById('pieChartQ1').getContext('2d');
+
+                    // Chart.jsを使用して円グラフを生成
+                    chartQ1 = new Chart(ctx, {
+                        type: 'pie', // グラフのタイプをパイとして設定
+
+                        // データセットの設定
+                        data: {
+                            labels: labels, // ラベルを設定
+                            datasets: [{
+                                label: 'Pie Chart Example', // データセットのラベル
+                                data: values, // データセットの値
+                                backgroundColor: [
+                                    '#FF6384',  // 赤
+                                    '#36A2EB',  // 青
+                                    '#FFCE56',  // 黄
+                                    '#4BC0C0',  // シアン
+                                    '#9966CC',  // パープル
+                                ],
+
+                                borderColor: [
+                                    'white',  // 各セグメントの境界線の色 
+                                ],
+                                borderWidth: 5, // 境界線の幅
+                                hoverOffset: 60  // ホバー時のセグメントのオフセット（浮かび上がる効果）
+                            }]
+                        },
+
+                        // グラフのオプション設定
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: true  // 凡例を表示
+                                }
+                            },
+                            cutout: '50%',  // 円グラフの中心のカットアウト（穴）のサイズ
+                            circumference: 360,  // 円グラフの円周の長
+                            responsive: false,
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('グラフ描画エラー:', error);
+            }
+        }
+        // グラフを描画
+        drawChart();
+    </script>
+    <span>設問2</span>
+    <canvas id="pieChartQ2" width="400" height="400" style="width: 400px; height: 400px;"></canvas>
+    <script>
+        function drawChartWithoutFetch() {
+            try {
+                // チャートがまだ生成されていない場合
+                if (chartQ2 == null) {
+                    
+                    // データからラベルと値の配列を作成
+                    const labels = Object.keys(resultsQ2);
+                    const values = Object.values(resultsQ2);
+
+                    // <canvas> 要素のコンテキストを取得
+                    const ctx = document.getElementById('pieChartQ2').getContext('2d');
+
+                    // Chart.jsを使用して円グラフを生成
+                    chartQ2 = new Chart(ctx, {
+                        type: 'pie', // グラフのタイプをパイとして設定
+
+                        // データセットの設定
+                        data: {
+                            labels: labels, // ラベルを設定
+                            datasets: [{
+                                label: 'Pie Chart Example', // データセットのラベル
+                                data: values, // データセットの値
+                                backgroundColor: [
+                                    '#FF6384',  // 赤
+                                    '#36A2EB',  // 青
+                                    '#FFCE56',  // 黄
+                                    '#4BC0C0',  // シアン
+                                    '#9966CC',  // パープル
+                                ],
+
+                                borderColor: [
+                                    'white',  // 各セグメントの境界線の色 
+                                ],
+                                borderWidth: 5, // 境界線の幅
+                                hoverOffset: 60  // ホバー時のセグメントのオフセット（浮かび上がる効果）
+                            }]
+                        },
+
+                        // グラフのオプション設定
+                        options: {
+                            plugins: {
+                                legend: {
+                                    display: true  // 凡例を表示
+                                }
+                            },
+                            cutout: '50%',  // 円グラフの中心のカットアウト（穴）のサイズ
+                            circumference: 360,  // 円グラフの円周の長
+                            responsive: false,
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('グラフ描画エラー:', error);
+            }
+        }
+        // グラフを描画
+        drawChartWithoutFetch();
+    </script>
+</body>
+</html>

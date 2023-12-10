@@ -1,0 +1,61 @@
+package main
+
+import "fmt"
+
+type Stringfy interface {
+    ToString() string
+}
+
+
+
+type Person struct {
+    Name string
+    Age  int
+}
+
+func (p *Person) ToString() string {
+    return fmt.Sprintf("Name=%v,Age=%v", p.Name, p.Age)
+}
+
+
+
+
+type Car struct {
+    Number string
+    Model  string
+}
+
+func (c *Car) ToString() string {
+    return fmt.Sprintf("Number=%v,Model=%v", c.Number, c.Model)
+}
+
+
+
+
+
+func main() {
+    vs := []Stringfy{
+        &Person{Name: "Taro", Age: 21},
+        &Car{Number: "123-456", Model: "AB-1234"},
+    }
+
+    for _, v := range vs {
+        fmt.Println(v.ToString())
+    }
+}
+
+
+
+コードの目的
+    異なるCar構造体とPerson構造体はToString()メソッドを
+    実装していて、Stringfyインターフェースを満たしている
+    そのため共通のインターフェースを使用することで異なる型を統一的に扱っている
+
+    具体的にメリットを解説するとToStringを連続で使いたいときなどに
+    Car.ToString()
+    Person.ToString()
+    ....
+    などと一つ一つコードを書くのは非効率
+    ここでインターフェースで統一することで繰り返し文を用いてToString()メソッドを使用することができる
+    (Stringfy型のスライスを作りそこに構造体のアドレスを格納、それを用いてメソッドを使用)
+
